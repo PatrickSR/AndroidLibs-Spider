@@ -1,0 +1,10 @@
+{
+  "name": "androidlibs-spider",
+  "dependencies": {
+    "cheerio": "registry:npm/cheerio#0.20.0+20160422172414",
+    "request": "registry:npm/request#2.69.0+20160428223725"
+  },
+  "globalDependencies": {
+    "node": "registry:env/node#6.0.0+20160902022231"
+  }
+}

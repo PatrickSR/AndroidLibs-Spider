@@ -1,17 +1,24 @@
 {
-  "name": "AndroidLibs-Spider",
-  "version": "0.0.0",
-  "private": true,
+  "name": "androidlibs-spider",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node ./bin/www"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PatrickSR/AndroidLibs-Spider.git"
+  },
+  "author": "patrick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PatrickSR/AndroidLibs-Spider/issues"
+  },
+  "homepage": "https://github.com/PatrickSR/AndroidLibs-Spider#readme",
   "dependencies": {
-    "body-parser": "~1.15.1",
-    "cookie-parser": "~1.4.3",
-    "debug": "~2.2.0",
-    "ejs": "~2.4.1",
-    "express": "~4.13.4",
-    "morgan": "~1.7.0",
-    "serve-favicon": "~2.3.0"
+    "cheerio": "^0.22.0",
+    "http": "0.0.0",
+    "request": "^2.74.0"
   }
 }
