@@ -29,14 +29,14 @@ scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%BE%85%E5%8A%A9%E5%B
 scan("https://github.com/XXApple/AndroidLibs/blob/master/%E8%BF%9B%E5%BA%A6%E6%9D%A1Progressbar/README.md", "progressbar")
 
 
-function scan(target, local) {
+function scan(target, category) {
     request(target, function(err, response, body) {
         console.log("Request" + target + " Complate ... ")
-        parse(body, local)
+        parse(body, category)
     })
 }
 
-function parse(body, local) {
+function parse(body, category) {
     var list = []
 
     var $ = cheerio.load(body)
@@ -65,20 +65,41 @@ function parse(body, local) {
                 }
             }
 
-            list.push({
+            putMongoDB({
                 name: itemName,
                 link: itemLink,
                 remark: itemRemark,
+                category:category,
                 pic: itemPic
             })
        
     })
-
-    putWilddog(list, local)
+    
+    // putWilddog(list, local)
 }
 
 function nextBlock(elememt) {
     return elememt.next.next
+}
+
+
+function putMongoDB(item){
+    var options = {
+        method: 'PUT',
+        url: "http://localhost:3001/items/",
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: item,
+        json: true
+    };
+
+    request(options,function(err,response, body){
+        if (err) throw new Error(err);
+
+        console.log(body)
+    })
+
 }
 
 /**
