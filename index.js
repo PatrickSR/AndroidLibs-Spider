@@ -5,35 +5,144 @@ var cheerio = require('cheerio')
 
 var count = 18
 
-scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%88%97%E8%A1%A8List/README.md", "list")
-scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%8A%A8%E7%94%BBAnimation/README.md", "animation")
-scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%9B%BE%E6%A0%87Icon/README.md", "icon")
-scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%9B%BE%E7%89%87%E6%A1%86%E6%9E%B6Image/README.md", "image")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%9B%BE%E8%A1%A8Chart/README.md", "chart")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%AE%8C%E6%95%B4%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEProject/README.md", "project")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%B8%83%E5%B1%80Layout/README.md", "layout")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6Framework/README.md", "framework")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%BC%B9%E6%A1%86Dialog/README.md", "dialog")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E6%8C%89%E9%92%AEButton/README.md", "button")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E6%96%87%E6%9C%ACLabel/README.md", "label")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E7%89%B9%E6%95%88Effect/README.md", "effect")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6Network/README.md", "network")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6Custom/README.md", "custom")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%8F%9C%E5%8D%95Menu/README.md", "menu")
-scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7%E7%B1%BBUtils/README.md", "utils")
-scan("https://github.com/XXApple/AndroidLibs/blob/master/%E8%BF%9B%E5%BA%A6%E6%9D%A1Progressbar/README.md", "progressbar")
-scan("https://github.com/XXApple/AndroidLibs/blob/master/RxJava/README.md", "rxjava")
+// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%88%97%E8%A1%A8List/README.md", "list")
+// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%8A%A8%E7%94%BBAnimation/README.md", "animation")
+// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%9B%BE%E6%A0%87Icon/README.md", "icon")
+// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%9B%BE%E7%89%87%E6%A1%86%E6%9E%B6Image/README.md", "image")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%9B%BE%E8%A1%A8Chart/README.md", "chart")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%AE%8C%E6%95%B4%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEProject/README.md", "project")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%B8%83%E5%B1%80Layout/README.md", "layout")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6Framework/README.md", "framework")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%BC%B9%E6%A1%86Dialog/README.md", "dialog")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E6%8C%89%E9%92%AEButton/README.md", "button")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E6%96%87%E6%9C%ACLabel/README.md", "label")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E7%89%B9%E6%95%88Effect/README.md", "effect")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6Network/README.md", "network")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6Custom/README.md", "custom")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%8F%9C%E5%8D%95Menu/README.md", "menu")
+// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7%E7%B1%BBUtils/README.md", "utils")
+// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E8%BF%9B%E5%BA%A6%E6%9D%A1Progressbar/README.md", "progressbar")
+// scan("https://github.com/XXApple/AndroidLibs/blob/master/RxJava/README.md", "rxjava")
 
+var targets = [
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/blob/master/%E5%88%97%E8%A1%A8List/README.md",
+    //     category: "list"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/blob/master/%E5%8A%A8%E7%94%BBAnimation/README.md",
+    //     category: "animation"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/blob/master/%E5%9B%BE%E6%A0%87Icon/README.md",
+    //     category: "icon"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/blob/master/%E5%9B%BE%E7%89%87%E6%A1%86%E6%9E%B6Image/README.md",
+    //     category: "image"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E5%9B%BE%E8%A1%A8Chart/README.md",
+    //     category: "chart"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E5%AE%8C%E6%95%B4%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEProject/README.md",
+    //     category: "project"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E5%B8%83%E5%B1%80Layout/README.md",
+    //     category: "layout"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6Framework/README.md",
+    //     category: "framework"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E5%BC%B9%E6%A1%86Dialog/README.md",
+    //     category: "dialog"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E6%8C%89%E9%92%AEButton/README.md",
+    //     category: "button"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E6%96%87%E6%9C%ACLabel/README.md",
+    //     category: "label"
+    // }
+    // {//有问题
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E7%89%B9%E6%95%88Effect/README.md",
+    //     category: "effect"
+    // }
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6Network/README.md",
+    //     category: "network"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6Custom/README.md",
+    //     category: "custom"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E8%8F%9C%E5%8D%95Menu/README.md",
+    //     category: "menu"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/tree/master/%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7%E7%B1%BBUtils/README.md",
+    //     category: "utils"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/blob/master/%E8%BF%9B%E5%BA%A6%E6%9D%A1Progressbar/README.md",
+    //     category: "progressbar"
+    // },
+    // {
+    //     link: "https://github.com/XXApple/AndroidLibs/blob/master/RxJava/README.md",
+    //     category: "rxjava"
+    // }
+]
 
-function scan(target, category) {
-    request(target, function (err, response, body) {
-        console.log("Request 【" + category + "】 Complate ... ")
-        console.log('scan count :' + --count)
-        parse(body, category)
+var lock = false
 
-        if (!count) {
-            console.log('Scan All Complate ...')
+scanTargets()
+
+/**
+ * 扫描全部target
+ */
+function scanTargets() {
+    var scanInterval = setInterval(function () {
+        if (!lock) {
+
+            lock = true
+
+            var target = targets.pop()
+
+            if (!target) {
+                clearInterval(scanInterval)
+                console.log('Scan Complate！')
+            } else {
+                console.log('prepare scan ' + target.category)
+                console.log('Only ' + targets.length + ' left')
+                scan(target.link, target.category)
+            }
         }
+    }, 1000)
+}
+
+function scan(link, category) {
+    request(link, {
+        timeout: 60000
+    }, function (err, response, body) {
+        if (err) {
+            console.log(err)
+            targets.push({
+                link: link,
+                category: category
+            })
+            lock = false
+            return
+        } else {
+            console.log("Request 【" + category + "】 Complate ... ")
+            parse(body, category)
+        }
+
     })
 }
 
@@ -66,15 +175,28 @@ function parse(body, category) {
             }
         }
 
-        putMongoDB({
+        list.push({
             name: itemName,
             link: itemLink,
             remark: itemRemark,
             category: category,
             images: itemPic
         })
-
     })
+
+    console.log(category + ' have ' + list.length + ' item')
+
+    var putMongoDBInterval = setInterval(function () {
+        if (list.length > 0) {
+            console.log(list.length + ' left')
+            var item = list.pop()
+            putMongoDB(item)
+        } else {
+            clearInterval(putMongoDBInterval)
+            lock = false
+            console.log('-------------------------------------------')
+        }
+    }, 300)
 
 }
 
@@ -96,7 +218,11 @@ function putMongoDB(item) {
     };
 
     request(options, function (err, response, body) {
-        if (err) throw new Error(err);
+        if (err) {
+            throw new Error(err);
+        } else {
+            // console.log(response)
+        }
 
         // console.log(body)
     })
