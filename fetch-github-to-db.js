@@ -12,7 +12,8 @@ const cheerio = require('cheerio')
 /**
  * 拉取数据的url
  */
-const targets = [{
+const targets = [
+    {
         link: "https://github.com/XXApple/AndroidLibs/blob/master/%E5%88%97%E8%A1%A8List/README.md",
         category: "list"
     },
@@ -85,15 +86,15 @@ const targets = [{
         category: "rxjava"
     },
     {
-        link:"https://raw.githubusercontent.com/XXApple/AndroidLibs/master/%E9%9F%B3%E8%A7%86%E9%A2%91Audio_Video/README.md",
+        link:"https://github.com/XXApple/AndroidLibs/blob/master/%E9%9F%B3%E8%A7%86%E9%A2%91Audio_Video/README.md",
         category:"audio_video"
     },
     {
-        link:"https://raw.githubusercontent.com/XXApple/AndroidLibs/master/AI_VI/README.md",
+        link:"https://github.com/XXApple/AndroidLibs/blob/master/AI_VI/README.md",
         category:"ai_vi"
     },
     {
-        link:"https://raw.githubusercontent.com/XXApple/AndroidLibs/master/gradle/README.md",
+        link:"https://github.com/XXApple/AndroidLibs/blob/master/gradle/README.md",
         category:"gradle"
     }
 ]
