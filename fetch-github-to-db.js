@@ -1,30 +1,18 @@
-/// <reference path="./typings/index.d.ts" />
+/**
+ * 定时去从Android-Libs的github里面把新的内容同步到DB里面
+ * 
+ * 循环暂定一天一次，每天早上8点开始
+ * 
+ */
+const schedule = require('node-schedule')
 
-var request = require('request')
-var cheerio = require('cheerio')
+const request = require('request')
+const cheerio = require('cheerio')
 
-var count = 18
-
-// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%88%97%E8%A1%A8List/README.md", "list")
-// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%8A%A8%E7%94%BBAnimation/README.md", "animation")
-// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%9B%BE%E6%A0%87Icon/README.md", "icon")
-// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E5%9B%BE%E7%89%87%E6%A1%86%E6%9E%B6Image/README.md", "image")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%9B%BE%E8%A1%A8Chart/README.md", "chart")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%AE%8C%E6%95%B4%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEProject/README.md", "project")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%B8%83%E5%B1%80Layout/README.md", "layout")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6Framework/README.md", "framework")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E5%BC%B9%E6%A1%86Dialog/README.md", "dialog")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E6%8C%89%E9%92%AEButton/README.md", "button")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E6%96%87%E6%9C%ACLabel/README.md", "label")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E7%89%B9%E6%95%88Effect/README.md", "effect")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6Network/README.md", "network")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6Custom/README.md", "custom")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%8F%9C%E5%8D%95Menu/README.md", "menu")
-// scan("https://github.com/XXApple/AndroidLibs/tree/master/%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7%E7%B1%BBUtils/README.md", "utils")
-// scan("https://github.com/XXApple/AndroidLibs/blob/master/%E8%BF%9B%E5%BA%A6%E6%9D%A1Progressbar/README.md", "progressbar")
-// scan("https://github.com/XXApple/AndroidLibs/blob/master/RxJava/README.md", "rxjava")
-
-var targets = [{
+/**
+ * 拉取数据的url
+ */
+const targets = [{
         link: "https://github.com/XXApple/AndroidLibs/blob/master/%E5%88%97%E8%A1%A8List/README.md",
         category: "list"
     },
@@ -68,7 +56,7 @@ var targets = [{
         link: "https://github.com/XXApple/AndroidLibs/tree/master/%E6%96%87%E6%9C%ACLabel/README.md",
         category: "label"
     },
-    { //有问题
+    {
         link: "https://github.com/XXApple/AndroidLibs/tree/master/%E7%89%B9%E6%95%88Effect/README.md",
         category: "effect"
     },
@@ -98,38 +86,40 @@ var targets = [{
     }
 ]
 
-var lock = false
-
-scanTargets()
+/**
+ * 拉取中需要锁上避免访问
+ */
+let lock = false
 
 /**
- * 扫描全部target
+ * 拉取Android libs数据
  */
-function scanTargets() {
-    var scanInterval = setInterval(function () {
+const fetchData = () => {
+    let scanInterval = setInterval(() => {
         if (!lock) {
 
             lock = true
 
-            var target = targets.pop()
+            let target = targets.pop()
 
+            //如果拉取完，清除Interval
             if (!target) {
                 clearInterval(scanInterval)
                 console.log('Scan Complate！')
             } else {
                 console.log('prepare scan ' + target.category)
-                console.log('Only ' + targets.length + ' left')
+                console.log('Only ' + targets.length + ' left now')
                 scan(target.link, target.category)
             }
         }
     }, 1000)
 }
 
-function scan(link, category) {
+const scan = (link, category) => {
     request(link, {
         timeout: 60000
     }, function (err, response, body) {
-        if (err) {
+        let errorHandler = (err) => {
             console.log(err)
             targets.push({
                 link: link,
@@ -137,42 +127,48 @@ function scan(link, category) {
             })
             lock = false
             return
+        }
+
+        if (err) {
+            errorHandler(err)
         } else {
             console.log("Request 【" + category + "】 Complate ... ")
-            parse(body, category)
+
+            try {
+                parse(body, category)
+            } catch (err) {
+                errorHandler(err)
+            }
         }
 
     })
 }
 
-function parse(body, category) {
-    var list = []
+const parse = (body, category) => {
 
-    var $ = cheerio.load(body)
+    let list = []
+
+    let $ = cheerio.load(body)
 
     $('hr').each(function (i, elememt) {
-        var e = elememt.next.next
+        let e = elememt.next.next
+
+        let itemName;
+        let itemLink;
+        let itemRemark;
         if (!e) return;
 
         if (e.firstChild.firstChild) {
-            var itemName = e.firstChild.firstChild.data
+            itemName = e.firstChild.firstChild.data
         } else {
             return
         }
 
-        var itemLink = e.lastChild.lastChild.data
+        itemLink = e.lastChild.lastChild.data
         e = nextBlock(e)
-        var itemRemark = e.firstChild.data
+        itemRemark = e.firstChild.data
         e = nextBlock(e)
 
-        var itemPic = []
-
-        for (var index = 0; index < e.childNodes.length; index++) {
-            var picNode = e.childNodes[index];
-            if (picNode.attribs && picNode.attribs.href) {
-                itemPic.push(picNode.attribs.href)
-            }
-        }
 
         list.push({
             name: itemName,
@@ -184,10 +180,10 @@ function parse(body, category) {
 
     console.log(category + ' have ' + list.length + ' item')
 
-    var putMongoDBInterval = setInterval(function () {
+    let putMongoDBInterval = setInterval(function () {
         if (list.length > 0) {
             console.log(list.length + ' left')
-            var item = list.pop()
+            let item = list.pop()
             saveDB(item)
         } else {
             clearInterval(putMongoDBInterval)
@@ -198,7 +194,7 @@ function parse(body, category) {
 
 }
 
-function nextBlock(elememt) {
+const nextBlock = (elememt) => {
     return elememt.next.next
 }
 
@@ -228,10 +224,10 @@ const analyzeLink = (link) => {
     })
 }
 
-function saveDB(item) {
+const saveDB = (item) => {
     // console.log(item)
 
-    var options = {
+    let options = {
         method: 'POST',
         headers: {
             'content-type': 'application/json'
@@ -258,12 +254,21 @@ function saveDB(item) {
         options.url = "http://localhost:9000/websites"
         request(options, function (err, response, body) {
             if (err) {
-                throw new Error(err);
+                console.error(err)
             } else {
                 // console.log(response)
+                console.log(body)
             }
-
-            // console.log(body)
         })
     })
 }
+
+// schedule.scheduleJob({
+//     dayOfWeek: [0, 1, 2, 3, 4, 5, 6],
+//     hour: 8,
+//     minute: 0 //每天
+// }, () => {
+//     fetchData()
+// })
+
+fetchData()
