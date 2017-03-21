@@ -276,12 +276,12 @@ const saveDB = (item) => {
     })
 }
 
-// schedule.scheduleJob({
-//     dayOfWeek: [0, 1, 2, 3, 4, 5, 6],
-//     hour: 8,
-//     minute: 0 //每天
-// }, () => {
-//     fetchData()
-// })
+schedule.scheduleJob({
+    dayOfWeek: [0, 1, 2, 3, 4, 5, 6],
+    hour: 8,
+    minute: 0 //每天
+}, () => {
+    fetchData()
+})
 
-fetchData()
+// fetchData()
