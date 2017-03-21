@@ -83,6 +83,18 @@ const targets = [{
     {
         link: "https://github.com/XXApple/AndroidLibs/blob/master/RxJava/README.md",
         category: "rxjava"
+    },
+    {
+        link:"https://raw.githubusercontent.com/XXApple/AndroidLibs/master/%E9%9F%B3%E8%A7%86%E9%A2%91Audio_Video/README.md",
+        category:"audio_video"
+    },
+    {
+        link:"https://raw.githubusercontent.com/XXApple/AndroidLibs/master/AI_VI/README.md",
+        category:"ai_vi"
+    },
+    {
+        link:"https://raw.githubusercontent.com/XXApple/AndroidLibs/master/gradle/README.md",
+        category:"gradle"
     }
 ]
 
