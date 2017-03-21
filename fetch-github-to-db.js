@@ -252,7 +252,7 @@ const saveDB = (item) => {
     //判断是GitHub的还是其他网址
     analyzeLink(item.link).then(() => {
         //GitHub
-        options.url = "http://localhost:9000/waiting-audit-repos"
+        options.url = "http://localhost:9000/repos"
         request(options, function (err, response, body) {
             if (err) {
                 throw new Error(err);
