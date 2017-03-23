@@ -10,6 +10,11 @@ const GitHubApi = require("github");
 
 const GITHUB_ACCESS_TOKEN = 'f6bee44b0af9a55edb05e48f5248e25ac0fc1400'
 
+const url = require('./options').home;
+
+let showdown  = require('showdown');
+showdown.setOption('omitExtraWLInCodeBlocks',true);
+let converter = new showdown.Converter();
 
 let _lock = false
 /**
@@ -193,7 +198,8 @@ const save = (lib, githubInfo, githubReadme) => {
             if (!error) {
                 let readme;
                 try {
-                    readme = markdown.toHTML(body)
+                    // readme = markdown.toHTML(body)
+                    readme = converter.makeHtml(body)
                 } catch (e) {
                     reject(e)
                 }
@@ -202,7 +208,7 @@ const save = (lib, githubInfo, githubReadme) => {
 
                 var options = {
                     method: 'PUT',
-                    url: 'http://localhost:9000/repos/'+lib.id,
+                    url: url+'/repos/'+lib.id,
                     headers: {
                         'content-type': 'application/json'
                     },
@@ -235,7 +241,7 @@ const save = (lib, githubInfo, githubReadme) => {
 }
 
 //获取完整列表
-request('http://localhost:9000/repos?page=1&limit=2000&category=gradle', (error, response, body) => {
+request(url+'/repos?page=1&limit=2000&category=gradle', (error, response, body) => {
     fills(JSON.parse(body))
 })
 
