@@ -96,6 +96,7 @@ const fills = (libs) => {
 
             analyzeLink(lib.link)
                 .then((result) => {
+                    //解析完github的地址，获取Repo Info
                     owner = result.owner
                     repo = result.repo
 
@@ -109,33 +110,31 @@ const fills = (libs) => {
                     githubReadme = result.data
                     return save(lib, githubInfo, githubReadme)
                 })
-                .then(() => {
-                    return new Promise((resolve, reject) => {
-                        //删除同步的repo
-                        console.log('删除同步的repo')
-                        var options = {
-                            method: 'DELETE',
-                            url: 'http://localhost:9000/waiting-audit-repos/' + lib.id,
-                            headers: {
-                                'content-type': 'application/json'
-                            },
-                            body: {
-                                access_token: 'kCUkvv0xPXRZ7uCe942w6LEjSIgnq2n6'
-                            },
-                            json: true
-                        };
+                // .then(() => {
+                //     return new Promise((resolve, reject) => {
+                //         //删除同步的repo
+                //         console.log('删除同步的repo')
+                //         var options = {
+                //             method: 'DELETE',
+                //             url: 'http://localhost:9000/waiting-audit-repos/' + lib.id,
+                //             headers: {
+                //                 'content-type': 'application/json'
+                //             },
+                //             body: {
+                //                 access_token: 'kCUkvv0xPXRZ7uCe942w6LEjSIgnq2n6'
+                //             },
+                //             json: true
+                //         };
 
-                        request(options, function (error, response, body) {
-                            if (error){
-                                reject(error)
-                            }else{
-                                resolve()
-                            }
-                        });
-                    })
-
-
-                })
+                //         request(options, function (error, response, body) {
+                //             if (error){
+                //                 reject(error)
+                //             }else{
+                //                 resolve()
+                //             }
+                //         });
+                //     })
+                // })
                 .then((success) => {
                     unlock()
                     console.log('sync 【' + owner + '】' + ' 【' + repo + '】成功')
@@ -192,34 +191,30 @@ const save = (lib, githubInfo, githubReadme) => {
         
         request(githubReadme.download_url, (error, response, body) => {
             if (!error) {
-
-                let readmeHtml
-
+                let readme;
                 try {
-                    readmeHtml = markdown.toHTML(body)
+                    readme = markdown.toHTML(body)
                 } catch (e) {
                     reject(e)
                 }
 
+                // let readme = body
 
                 var options = {
-                    method: 'POST',
-                    url: 'http://localhost:9000/repos/',
+                    method: 'PUT',
+                    url: 'http://localhost:9000/repos/'+lib.id,
                     headers: {
                         'content-type': 'application/json'
                     },
                     body: {
                         access_token: 'kCUkvv0xPXRZ7uCe942w6LEjSIgnq2n6',
-                        name: lib.name,
-                        link: lib.link,
-                        description: lib.description,
-                        category: lib.category,
+                        name:lib.name,
+                        link:lib.link,
+                        category:lib.category,
                         star: githubInfo.stargazers_count,
                         fork: githubInfo.forks_count,
                         watch: githubInfo.subscribers_count,
-                        // contributors: githubInfo.network_count,
-                        readme: readmeHtml,
-                        audit: "passed"
+                        readme: readme
                     },
                     json: true
                 };
@@ -232,6 +227,7 @@ const save = (lib, githubInfo, githubReadme) => {
                     }
                 });
             } else {
+                console.log(lib)
                 reject(error)
             }
         })
@@ -239,11 +235,10 @@ const save = (lib, githubInfo, githubReadme) => {
 }
 
 //获取完整列表
-// request('http://localhost:9000/waiting-audit-repos?page=1&limit=1000', (error, response, body) => {
-//     fills(JSON.parse(body))
-// })
-
-//获取完整列表
-request('http://localhost:9000/waiting-audit-repos?page=1&limit=2000', (error, response, body) => {
+request('http://localhost:9000/repos?page=1&limit=2000&category=gradle', (error, response, body) => {
     fills(JSON.parse(body))
 })
+
+// fetchGithubReadme('jaredsburrows','gradle-license-plugin').then((result)=>{
+//     console.log(result)
+// })
