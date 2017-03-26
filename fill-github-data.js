@@ -10,7 +10,7 @@ const GitHubApi = require("github");
 
 const GITHUB_ACCESS_TOKEN = 'f6bee44b0af9a55edb05e48f5248e25ac0fc1400'
 
-const url = require('./options').home;
+const url = require('./options').local;
 
 let showdown  = require('showdown');
 showdown.setOption('omitExtraWLInCodeBlocks',true);
@@ -240,10 +240,16 @@ const save = (lib, githubInfo, githubReadme) => {
     })
 }
 
+//获取完整gradle列表
+// request(url+'/repos?page=1&limit=2000&category=gradle', (error, response, body) => {
+//     fills(JSON.parse(body))
+// })
+
 //获取完整列表
-request(url+'/repos?page=1&limit=2000&category=gradle', (error, response, body) => {
+request(url+'/repos?page=1&limit=2000', (error, response, body) => {
     fills(JSON.parse(body))
 })
+
 
 // fetchGithubReadme('jaredsburrows','gradle-license-plugin').then((result)=>{
 //     console.log(result)
